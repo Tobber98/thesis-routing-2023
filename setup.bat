@@ -1,8 +1,9 @@
-.\rust\routing
+cd .\rust\routing
 cargo b -r
-..\o-routing
+cd ..\o-routing
 cargo b -r
-..\nd-routing
+cd ..\nd-routing
 cargo b -r
-..\..\python
+cd ..\..\python
 pip install -r requirements.txt
+cd ..
