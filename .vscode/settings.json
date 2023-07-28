@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "rust/routing/Cargo.toml",
+        "rust/nd-routing/Cargo.toml",
+        "rust/o-routing/Cargo.toml"
+    ],
+    "python.languageServer": "Pylance"
+}
