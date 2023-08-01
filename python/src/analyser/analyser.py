@@ -1,26 +1,8 @@
-import scipy
-import scipy.stats
 import pandas as pd 
 from pandas import DataFrame
 import numpy as np
 from pathlib import Path
 import json
-import polars as pl
-"""
-def test():
-    df_np: pd.DataFrame= pd.read_pickle("temp_np.pkl")
-    df_p: pd.DataFrame = pd.read_pickle("temp_p.pkl")
-    a, b = df_np["mean_paths"].to_numpy(), df_p["mean_paths"].to_numpy()
-    print(scipy.stats.ttest_ind(a, b))
-    print(scipy.stats.wilcoxon(a, b))
-
-    print(scipy.stats.normaltest(a), "\n", scipy.stats.normaltest(b))
-
-    a, b = df_np["max_paths"], df_p["max_paths"]
-    # print(df_np["max_paths"].notna().to_numpy())
-
-    print(scipy.stats.ttest_ind(a, b))
-"""
 
 def dict_to_df(ix) -> DataFrame:
     i, x = ix
@@ -32,6 +14,7 @@ def dict_to_df(ix) -> DataFrame:
     partial_df = pd.concat([partial_df.drop(['path_length'], axis=1), pd.json_normalize(partial_df["path_length"]).add_prefix("path_length_")], axis=1)
     return partial_df
 
+
 def load_new_results_format(path: Path) -> DataFrame:
     with open(path, "r") as fd:
         json_results = json.load(fd)
@@ -40,40 +23,12 @@ def load_new_results_format(path: Path) -> DataFrame:
         partial_dfs.extend(map(dict_to_df, enumerate(json_results[shape])))
     return pd.concat(partial_dfs, ignore_index=True)
 
-# def merge_layouts(df: DataFrame):
-
 
 def analyse_order_dataframe(df: DataFrame) -> DataFrame:
     df["shape_str"]     = df["shape"].apply(str)
     df["volume"]        = df["shape"].apply(np.prod)
-    # print(df["path_length_random"])
     aggregation_functions = {
-        # 'nroutable_random':     np.hstack, 
-        # 'nroutable_shortest':   np.hstack, 
-        # 'nroutable_longest':    np.hstack,
-        # 'nroutable_min_z':      np.hstack, 
-        # 'nroutable_min_y':      np.hstack, 
-        # 'nroutable_min_x':      np.hstack, 
-        # 'nroutable_min_axes':   np.hstack, 
-        
-        # 'completed_random':     np.hstack, 
-        # 'completed_shortest':   np.hstack, 
-        # 'completed_longest':    np.hstack,
-        # 'completed_min_z':      np.hstack, 
-        # 'completed_min_y':      np.hstack, 
-        # 'completed_min_x':      np.hstack, 
-        # 'completed_min_axes':   np.hstack,
-        
-        # 'path_length_random':   np.hstack, 
-        # 'path_length_shortest': np.hstack, 
-        # 'path_length_longest':  np.hstack,
-        # 'path_length_min_z':    np.hstack, 
-        # 'path_length_min_y':    np.hstack, 
-        # 'path_length_min_x':    np.hstack, 
-        # 'path_length_min_axes': np.hstack, 
-        
         'min_distances':        np.hstack,
-
         "volume":               "first", 
         "shape":                "first"
         }
@@ -95,7 +50,6 @@ def analyse_order_dataframe(df: DataFrame) -> DataFrame:
         df[f"min_density_{c}"]  = df[f"min_distances"] * df[f"completed_{c}"]#.sum()
         df[f"min_density_{c}"]  = df[f"min_density_{c}"].apply(lambda x: np.sum(x, axis=1)) / df["volume"]
         df[f"density_{c}"]      = (df[f"path_length_{c}"] / df["volume"]).apply(np.mean)
-        # print(df[f"density_{c}"].apply(np.mean))
     return df
 
 
@@ -117,6 +71,7 @@ def analyse_dataframe(df: DataFrame) -> DataFrame:
     df["pfraction"]      = df["proutability"].apply(np.mean)
 
     return df
+
 
 if __name__ == "__main__":
     df = load_new_results_format(Path("../smallshapes/results_test.json"))

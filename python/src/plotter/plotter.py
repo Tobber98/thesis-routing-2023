@@ -27,21 +27,12 @@ from math import sqrt, ceil
 # Constants
 FIGURES_PATH = Path("../figures")
 
-logging.basicConfig(
-    filename="logging/test.log",
-    level=logging.DEBUG,
-    format="[{asctime}][{levelname:^8}] - {message:<50} ({filename}:{lineno:})",
-    style="{",
-    datefmt='%Y-%m-%d %H:%M:%S')
-
 try:
     from tkinter import Tk
     a = Tk(useTk=False)
     xres, yres = a.winfo_screenwidth() - 100, a.winfo_screenheight() - 200
-    # a.update()
     a.destroy()
 except:
-    # Raise exception in log
     xres, yres = 1800, 1000
 
 
@@ -59,7 +50,6 @@ class MLPGraph:
         self.zlim: int = zlim
         self.ylim: int = ylim
         self.xlim: int = xlim
-
         self.plot_init()
 
     def plot_init(self):
@@ -106,7 +96,6 @@ class MLPGraph:
             next = path.pop()
             self.plot_line(current, next, color)
             current = next
-
         self.plot_point(current, color)
 
     def plot_paths(self, paths):
@@ -499,17 +488,14 @@ def inverse_sigmoid(y, x0, k, b=None):
 
 
 def log_func(x, a, b, c):
-    # return a * np.log(x * (b - c))
     return a * np.log(x * b - c)
-    # return a * np.log(np.where(x - b == 0, x + b, x - b)) + c
-    return a * np.log(np.where(x*b < 0, -1*(x*b), x*b)) + c
+    # return a * np.log(np.where(x*b < 0, -1*(x*b), x*b)) + c
 
 
 def print_log_func(a, b, c):
     sympy.init_printing(use_unicode=True)
     x = sympy.symbols('x')
     d = sympy.Mul(sympy.Float(a, 3), sympy.ln(sympy.Add(sympy.Mul(sympy.Float(b, 3), x), -sympy.Float(c, 3), evaluate=False)), evaluate=False)
-    # d = round(a, 5) * sympy.ln(sympy.Mul(round(b, 5), sympy.Add(x, round(c, 5), evaluate=False), evaluate=False), evaluate=False)
     return sympy.pretty(d, full_prec=False)
 
 
@@ -524,8 +510,6 @@ def get_mae(x, y, func, popt):
     return np.mean(np.abs(y - func(x , *popt)))
 
 def get_curve(x, ydata, func, slope=False):
-    # meta_fit_vars['start'] = (13, 0.005, 0.1)
-    # meta_fit_vars['start_s'] = (-0.8, 0.0005, 0.0001)
     if func.__name__ == "sigmoid":
         p0 = [np.median(x), -1]
     elif not slope:
@@ -544,9 +528,9 @@ def save_fig(name, s):
         path / "{}_{:4}-{:02}-{:02}_{:02}.svg".format(s, *time.gmtime()), dpi=200, bbox_inches="tight", pad_inches=.05)
     plt.savefig(
         path / "{}_{:4}-{:02}-{:02}_{:02}.png".format(s, *time.gmtime()), dpi=200, bbox_inches="tight", pad_inches=.05)
-    
     plt.savefig(
         path / "{}_{}.svg".format(name.split("/")[-1].split("_")[0], s), dpi=200, bbox_inches="tight", pad_inches=.05)
+
 
 def set_plt_params(s, m, l):
     plt.rcParams.update({

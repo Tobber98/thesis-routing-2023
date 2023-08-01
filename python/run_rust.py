@@ -27,26 +27,26 @@ results_permuted_paths_zmin = [Path(f"../results/original/x{i}y{i}/p_results_zmi
 # results_paths_bug = [Path(f"../results/x{i}y{i}/np_results_bug.json") for i in MESHSIZES]
 # results_permuted_paths_bug = [Path(f"../results/x{i}y{i}/p_results_bug.json") for i in MESHSIZES]
 
-results_paths_max_g = [Path(f"../results/x{i}y{i}/np_results_max_g.json") for i in MESHSIZES]
-results_permuted_paths_max_g = [Path(f"../results/x{i}y{i}/p_results_max_g.json") for i in MESHSIZES]
+# results_paths_max_g = [Path(f"../results/x{i}y{i}/np_results_max_g.json") for i in MESHSIZES]
+# results_permuted_paths_max_g = [Path(f"../results/x{i}y{i}/p_results_max_g.json") for i in MESHSIZES]
 
 # results_paths[0] = Path(f"../results/x20y20/np_results_zmin.json")
 # results_permuted_paths[0] = Path(f"../results/x20y20/np_results_zmax.json")
 
-data_3d_paths = [Path(f"../data3d/x{i}y{i}/test_data.json") for i in MESHSIZES]
-results_3d_paths = [Path(f"../results3d/x{i}y{i}/np_results2.json") for i in MESHSIZES]
-results_3d_permuted_paths = [Path(f"../results3d/x{i}y{i}/p_results2.json") for i in MESHSIZES]
+# data_3d_paths = [Path(f"../data3d/x{i}y{i}/test_data.json") for i in MESHSIZES]
+# results_3d_paths = [Path(f"../results3d/x{i}y{i}/np_results2.json") for i in MESHSIZES]
+# results_3d_permuted_paths = [Path(f"../results3d/x{i}y{i}/p_results2.json") for i in MESHSIZES]
 
-data_extended_paths = [Path(f"../data_extended/x{i}y{i}/test_data.json") for i in MESHSIZES]
-results_extended_paths = [Path(f"../results_extended/x{i}y{i}/np_results_bigsample.json") for i in MESHSIZES]
-results_extended_permuted_paths = [Path(f"../results/x{i}y{i}/p_results.json") for i in MESHSIZES]
+# data_extended_paths = [Path(f"../data_extended/x{i}y{i}/test_data.json") for i in MESHSIZES]
+# results_extended_paths = [Path(f"../results_extended/x{i}y{i}/np_results_bigsample.json") for i in MESHSIZES]
+# results_extended_permuted_paths = [Path(f"../results/x{i}y{i}/p_results.json") for i in MESHSIZES]
 
 def run(path):
     extension = ".exe" if os.name == "nt" else ""
     rust_router = Path(f"../rust/routing/target/release/routing{extension}")
     print(f"Starting process for file: {path}")
     with open("out.txt", "w") as out:
-        subprocess.run([rust_router, path, '-s', '0', '-p', '200', '-c', f"{os.cpu_count() // WORKERS - 2}", "-e", "std"], stdout=sys.stdout)
+        subprocess.run([rust_router, path, '-s', '0', '-p', '200', '-c', f"{os.cpu_count()}", "-e", "std"], stdout=sys.stdout)
     print(f"Finished process for file: {path}")    
     return path
 
@@ -98,10 +98,11 @@ def main(args):
     if args.analyse3d:
         std_group = analyse_results(results_paths, "np")
         per_group = analyse_results(results_permuted_paths, "p")
-        std_3d_group = analyse_results(results_3d_paths, "np")
-        per_3d_group = analyse_results(results_3d_permuted_paths, "p")
+        # std_3d_group = analyse_results(results_3d_paths, "np")
+        # per_3d_group = analyse_results(results_3d_permuted_paths, "p")
         # plot_routability("3d", std_3d_group, per_3d_group)
-        plot_all("3d_all", std_group, per_group, std_3d_group, per_3d_group)
+        # plot_all("3d_all", std_group, per_group, std_3d_group, per_3d_group)
+    
     if osSleep:
         osSleep.uninhibit()
 

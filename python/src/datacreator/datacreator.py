@@ -13,6 +13,7 @@ def i_to_coord(index, shape):
         result.append(index // base % limit)
     return result
 
+
 def set_eligible_vertices(shape, min=None, max=None):
     eligible = []
     min = min if min else len(shape) + 2
@@ -23,10 +24,12 @@ def set_eligible_vertices(shape, min=None, max=None):
             eligible.append(i)
     return eligible
 
+
 def set_terminals(eligible, n_terminals=100):
         rng = np.random.default_rng()
         terminals = rng.choice(eligible, size=n_terminals, replace=False)
         return list(map(int, terminals))
+
 
 def create_netlist(n_terminals, length):
         rng = np.random.default_rng()
@@ -37,6 +40,7 @@ def create_netlist(n_terminals, length):
                 continue
             netlist.add(tuple(map(int,pair)))
         return list(netlist)
+
 
 def createdataset(name, shapes, nlayouts, samples_per_layout, netlist_lengths, n_terminals=100, min_available=None):
     dataset = {"netlists": {}, "shapes": {}}
@@ -58,123 +62,6 @@ def createdataset(name, shapes, nlayouts, samples_per_layout, netlist_lengths, n
         json.dump(dataset, fd)
 
 
-"""
-class DataCreator:
-    def __init__(self, shape) -> None:
-        self.shape = np.array(shape)
-        self.n = np.prod(shape)
-        self.netlist_lengths = None 
-
-        self.terminal_indices = []
-
-    def i_to_coord(self, i):
-        result = []
-        base = self.n
-        for limit in self.shape:
-            base //= limit
-            result.append(i // base % limit)
-        return result
-
-    def set_eligble_vertices(self, min=None):
-        eligible = []
-        if not min:
-            min = len(self.shape) - 1
-        for i in range(self.n): # numpy implement with np.where 
-            coord = self.i_to_coord(i)
-            accessible = 0
-            for c, s in zip(coord, self.shape):
-                if c != 0 and c != s - 1:
-                    accessible += 1
-            
-            if accessible >= min:
-                eligible.append(i)
-        return eligible
-
-    def set_terminals(self, n_terminals=100, eligible=None):
-        if not eligible:
-            eligible = self.set_eligble_vertices()
-
-        rng = np.random.default_rng()
-        terminals = rng.choice(eligible, size=n_terminals, replace=False)
-        return terminals
-
-    @staticmethod
-    def create_netlist(keys, length):
-        rng = np.random.default_rng()
-        netlist = set()
-        while len(netlist) != length:
-            pair = rng.choice(keys, 2, replace=False)
-            if tuple(pair[::-1]) in netlist:
-                continue
-            netlist.add(tuple(pair))
-        return netlist
-
-def create_dataset(name, shapes, nlayouts, samples_per_layout, netlist_lengths, n_terminals=100, min_available=None):
-    dataset = {"netlists": {}, "shapes": {}}
-
-    terminal_names = [f"N{i}" for i in range(n_terminals)]
-
-    for netlist_length in netlist_lengths:
-        netlist_samples = []
-        for _ in range(samples_per_layout):
-            sample = DataCreator.create_netlist(terminal_names, netlist_length)
-            netlist_samples.append(sample)
-        dataset["netlists"][f"N{netlist_length}"] = netlist_samples
-
-    for shape in shapes:
-        datacreator = DataCreator(shape)
-        for _ in nlayouts:
-            layout = datacreator.set_terminals()
-
-    # for shape in shapes:
-    #     datacreator = DataCreator(shape)
-    #     eligible_vertices = datacreator.set_eligble_vertices(min_available)
-    #     forshape = []
-    #     for _ in range(layouts):
-    #         layout = datacreator.set_terminals(n_terminals, eligible_vertices)
-    #         forshape.append(layout)
-    #     dataset["shapes"][str(shape)] = forshape
-    
-    print(dataset)
-    # for _ in range(samples_per_layout):
-    #     sample = datacreator.create_netlist(netlist_lengths)
-    #     forshape["netlists"].append(sample)
-    #     dataset[str(shape)] = forshape
-
-
-    if not Path(f"../../../new_data/{name}/").exists():
-            os.mkdir(Path(f"../../../new_data/{name}/"))
-    with open(Path(f"../../../new_data/{name}/dataset.json"), "w") as fd:
-        json.dump(dataset, fd)
-        
-
-# {
-#     "(10, 10, 10)": {
-#         "layouts": [],
-#         "netlists": {
-#             "10": [],
-#             "11": []
-#         }
-#     },
-#     "(20, 20, 20)": {
-#         "layouts": [],
-#         "netlists": {
-#             "10": [],
-#             "11": []
-#         }
-#     }
-# }
-
-# {
-#     "netlists": {
-#       N10://
-#     },
-#     "layouts": {
-#         "(10, 10, 10)": [],
-#         "(20, 20, 20)": []
-#     }
-# }
-"""
 def create_3d_data():
     Z = 7
     dims = list(range(20, 101, 10))
